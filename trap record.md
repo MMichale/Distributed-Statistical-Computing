@@ -1,3 +1,7 @@
+---
+typora-copy-images-to: upload
+---
+
 # 记录一下踩过的坑
 
 ## windows和linux的编码问题
@@ -6,13 +10,13 @@
 
 原因是win和linux对回车的编码不同
 
-![image-20201013150040871](trap record.assets/image-20201013150040871.png)
+![image-20201013152955648](https://i.loli.net/2020/10/13/sARnZam9BEriNvx.png)
 
 参考链接：https://blog.csdn.net/sz_bdqn/article/details/46499113
 
 也可以通过VScode进行转换 将右下角的CRLF换成LF
 
-![image-20201013150133252](trap record.assets/image-20201013150133252.png)
+![image-20201013153104875](https://i.loli.net/2020/10/13/wfju3ZHkPbNLzSB.png)
 
 ## \t制表符的问题
 
@@ -22,7 +26,7 @@ linux下制表符\t不是四个或八个空格
 
 如果在vscode下编辑一些文本文件需要用\t分隔 可以在vscode中设置使用tab缩进 而不是空格缩进
 
-![image-20201013150148893](trap record.assets/image-20201013150148893.png)
+![image-20201013153128350](https://i.loli.net/2020/10/13/QCGMlcHzAgqPL2a.png)
 
 ## Streaming命令中间不能加注释
 
@@ -30,4 +34,4 @@ linux下制表符\t不是四个或八个空格
 
 如果中间某个加注释了 就会报错
 
-![image-20201013150200050](trap record.assets/image-20201013150200050.png)
+![image-20201013153142968](https://i.loli.net/2020/10/13/3xPMB9QWF4UGzl8.png)
