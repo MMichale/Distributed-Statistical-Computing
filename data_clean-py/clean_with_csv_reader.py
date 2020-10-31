@@ -3,50 +3,23 @@ import sys
 import re
 import pandas as pd
 import warnings
+import csv
 warnings.filterwarnings("ignore")
 
-description = re.compile('".*?"')
-major_options = re.compile('"\[\'.*\]"')
-power = re.compile('"(\d+) hp @.*?RPM"')
-torque = re.compile('"(\d+) lb-ft @.*?RPM"')
 
 data = pd.DataFrame()
-# for line in sys.stdin:
-#     line = line.strip()
-#     columns = line.split(',')
-#     print(columns)
-#     break
 
 next(sys.stdin)
-for line in sys.stdin:
-    line = line.strip()
-    pending_list = []
-    if power.findall(line):
-        pending_list.append(int(power.findall(line)[0]))
-    else:
-        pending_list.append(0)
-    if torque.findall(line):
-        pending_list.append(int(torque.findall(line)[0]))
-    else:
-        pending_list.append(0)
-    if major_options.findall(line):
-        pending_list.extend([int('Backup Camera' in major_options.findall(line)[0]),
-                             int('Bluetooth' in major_options.findall(line)[0]),
-                             int('Heated Seats' in major_options.findall(line)[0]),
-                             int('Alloy Wheels' in major_options.findall(line)[0]),
-                             int('Navigation System' in major_options.findall(line)[0])])
-    else:
-        pending_list.extend([0, 0, 0, 0, 0])
-    # print(pending_list)
-    line = re.sub(major_options, '', line)
-    line = re.sub(power, '', line)
-    line = re.sub(torque, '', line)
-    line = re.sub(description, '', line)
-    res = line.split(',')
-    res.extend(pending_list)
-    # print(res)
-    data = data.append([res],ignore_index=True)  # cols: 66+7=73
-# print(data.shape)
+reader = csv.reader(sys.stdin)
+for line in reader:
+    try:
+        assert len(line)==66
+        data = data.append([line],ignore_index=True)
+    except:
+        continue
+
+# print(data.shape) #cols 66
+# print(data)
 
 # 1 back_legroom
 data[1] = data[1].str.split().str[0] # can get nan
@@ -281,18 +254,14 @@ data[64] = data[64].replace('--',0)
 data[64]=data[64].astype('float')
 data.rename(columns={64: 'width'}, inplace=True)
 
-# rename the new 5 columns: 66-72
-data.rename(columns={66: 'power', 67:'torque',68:'has_Backup_Camera',
-69:'has_Bluetooth',70:'has_Heated_Seats',71:'has_Alloy_Wheels',
-72:'has_Navigation_System',}, inplace=True)
 
 
-# print(data.shape) # 126 cols
+# print(data.shape) # 118 cols
 cols = list(data.columns)
 new_cols = [i for i in cols if isinstance(i,str)]
-# print(new_cols)
-# some cols need del, because it has dummy
-# 'body_type','franchise_make','fuel_type','has_accidents','isCab','transmission','wheel_system','engine_type'
+# # print(new_cols)
+# # some cols need del, because it has dummy
+# # 'body_type','franchise_make','fuel_type','has_accidents','isCab','transmission','wheel_system','engine_type'
 new_cols.remove('body_type')
 new_cols.remove('franchise_make')
 new_cols.remove('fuel_type')
@@ -302,5 +271,5 @@ new_cols.remove('transmission')
 new_cols.remove('wheel_system')
 new_cols.remove('engine_type')
 data = data[new_cols]
-print('{0}\t{1}'.format(data.shape[0], data.shape[1]))
+print('{0}\t{1}'.format(data.shape[0], data.shape[1])) # cols 73
 # print(data.info())
